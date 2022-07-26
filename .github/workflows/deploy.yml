@@ -30,6 +30,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - name: set up environment for deploy
+      uses: serverless/github-action@v3.1
       run: |
         ls -la
         source init.sh
