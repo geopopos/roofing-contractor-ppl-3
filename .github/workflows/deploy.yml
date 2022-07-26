@@ -37,7 +37,7 @@ jobs:
       shell: bash
     - run: npm ci
     - name: serverless deploy
-      uses: serverless/github-action@v3.1
+      # uses: serverless/github-action@v3.1
       with:
         args: deploy
       env:
