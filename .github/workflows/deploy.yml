@@ -18,7 +18,7 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-    -name: Use Python 3.8
+    - name: Use Python 3.8
       uses: actions/setup-python@v3
       with:
         python-version: 3.8
