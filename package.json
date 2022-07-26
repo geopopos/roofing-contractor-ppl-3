@@ -1,0 +1,11 @@
+{
+  "name": "roofing-contractor-ppl-api",
+  "version": "1.0.0",
+  "description": "Example of a Python Flask API service backed by DynamoDB with traditional Serverless Framework",
+  "author": "",
+  "devDependencies": {
+    "serverless-dynamodb-local": "^0.2.40",
+    "serverless-python-requirements": "^5.4.0",
+    "serverless-wsgi": "^3.0.0"
+  }
+}

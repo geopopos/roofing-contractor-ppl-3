@@ -1,0 +1,144 @@
+org: groros
+app: pay-per-lead-project
+service: roofing-contractor-ppl-api-3
+
+frameworkVersion: '3'
+
+custom:
+  stripeLambdaName: 'createStripeCustomer'
+  tableName: 'ppl-table-3-${self:provider.stage}'
+  wsgi:
+    app: app.app
+  dynamodb:
+    start:
+      migrate: true
+    stages:
+      - dev
+
+provider:
+  name: aws
+  runtime: python3.8
+  stage: dev
+  region: us-east-1
+  profile: serverless-admin
+  timeout: 10
+  memorySize: 128
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:  "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:custom.tableName}"
+        - Effect: Allow
+          Action:
+            - lambda:InvokeFunction
+          Resource:  "arn:aws:lambda:${opt:region, self:provider.region}:*:function:${self:custom.stripeLambdaName}"
+        - Effect: Allow
+          Action:
+            - sqs:SendMessage
+            - sqs:GetQueueUrl
+            - sqs:ListQueues
+          Resource:  "arn:aws:sqs:${opt:region, self:provider.region}:*:create-stripe-customer-dev-stripe-customer-creation-queue"
+  environment:
+    PPL_TABLE: ${self:custom.tableName}
+    REGION_NAME: ${self:provider.region}
+    SQS_QUEUE_URL: https://sqs.us-east-1.amazonaws.com/906360379090/create-stripe-customer-dev-stripe-customer-creation-queue
+
+functions:
+  api:
+    handler: wsgi_handler.handler
+    events:
+      - httpApi: '*'
+  getRoofer:
+    handler: wsgi_handler.handler
+    events:
+      - httpApi: 'GET /roofer/{proxy+}'
+  createRoofer:
+    handler: wsgi_handler.handler
+    events:
+      - httpApi: 'POST /roofer/{proxy+}'
+  getLead:
+    handler: wsgi_handler.handler
+    events:
+      - httpApi: 'GET /lead/{proxy+}'
+  createLead:
+    handler: wsgi_handler.handler
+    events:
+      - httpApi: 'POST /lead/{proxy+}'
+  createLeadPurchase:
+    handler: wsgi_handler.handler
+    events:
+      - httpApi: 'POST /lead_purchase/{proxy+}'
+  GetRooferLead:
+    handler: wsgi_handler.handler
+    events:
+      - httpApi: 'POST /roofer/lead/{proxy+}'
+  GetRooferByEmail:
+    handler: wsgi_handler.handler
+    events:
+      - httpApi: 'GET /roofer/email/{proxy+}'
+  
+
+
+plugins:
+  - serverless-wsgi
+  - serverless-python-requirements
+  - serverless-dynamodb-local
+
+resources:
+  Resources:
+    pplDynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: pk 
+            AttributeType: S
+          - AttributeName: sk 
+            AttributeType: S
+          - AttributeName: Email
+            AttributeType: S
+          - AttributeName: StripeId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: pk
+            KeyType: HASH
+          - AttributeName: sk
+            KeyType: RANGE
+        GlobalSecondaryIndexes:
+          - IndexName: GS1
+            KeySchema:
+              - AttributeName: sk
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+          - IndexName: Email
+            KeySchema:
+              - AttributeName: Email
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+          - IndexName: StripeId 
+            KeySchema:
+              - AttributeName: StripeId 
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.tableName}

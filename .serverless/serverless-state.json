@@ -1,0 +1,1981 @@
+{
+  "service": {
+    "service": "roofing-contractor-ppl-api-3",
+    "serviceObject": {
+      "name": "roofing-contractor-ppl-api-3"
+    },
+    "provider": {
+      "name": "aws",
+      "runtime": "python3.8",
+      "stage": "dev",
+      "region": "us-east-1",
+      "profile": "serverless-admin",
+      "timeout": 10,
+      "memorySize": 128,
+      "iam": {
+        "role": {
+          "statements": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:Query",
+                "dynamodb:Scan",
+                "dynamodb:GetItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem"
+              ],
+              "Resource": "arn:aws:dynamodb:us-east-1:*:table/ppl-table-3-dev"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "lambda:InvokeFunction"
+              ],
+              "Resource": "arn:aws:lambda:us-east-1:*:function:createStripeCustomer"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "sqs:SendMessage",
+                "sqs:GetQueueUrl",
+                "sqs:ListQueues"
+              ],
+              "Resource": "arn:aws:sqs:us-east-1:*:create-stripe-customer-dev-stripe-customer-creation-queue"
+            }
+          ]
+        }
+      },
+      "environment": {
+        "PPL_TABLE": "ppl-table-3-dev",
+        "REGION_NAME": "us-east-1",
+        "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/906360379090/create-stripe-customer-dev-stripe-customer-creation-queue"
+      },
+      "versionFunctions": true,
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketEncryption": {
+                "ServerSideEncryptionConfiguration": [
+                  {
+                    "ServerSideEncryptionByDefault": {
+                      "SSEAlgorithm": "AES256"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "ServerlessDeploymentBucketPolicy": {
+            "Type": "AWS::S3::BucketPolicy",
+            "Properties": {
+              "Bucket": {
+                "Ref": "ServerlessDeploymentBucket"
+              },
+              "PolicyDocument": {
+                "Statement": [
+                  {
+                    "Action": "s3:*",
+                    "Effect": "Deny",
+                    "Principal": "*",
+                    "Resource": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            },
+                            "/*"
+                          ]
+                        ]
+                      },
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            }
+                          ]
+                        ]
+                      }
+                    ],
+                    "Condition": {
+                      "Bool": {
+                        "aws:SecureTransport": false
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "ApiLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/roofing-contractor-ppl-api-3-dev-api"
+            }
+          },
+          "GetRooferLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/roofing-contractor-ppl-api-3-dev-getRoofer"
+            }
+          },
+          "CreateRooferLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/roofing-contractor-ppl-api-3-dev-createRoofer"
+            }
+          },
+          "GetLeadLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/roofing-contractor-ppl-api-3-dev-getLead"
+            }
+          },
+          "CreateLeadLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/roofing-contractor-ppl-api-3-dev-createLead"
+            }
+          },
+          "CreateLeadPurchaseLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/roofing-contractor-ppl-api-3-dev-createLeadPurchase"
+            }
+          },
+          "GetRooferLeadLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/roofing-contractor-ppl-api-3-dev-GetRooferLead"
+            }
+          },
+          "GetRooferByEmailLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/roofing-contractor-ppl-api-3-dev-GetRooferByEmail"
+            }
+          },
+          "IamRoleLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "lambda.amazonaws.com"
+                      ]
+                    },
+                    "Action": [
+                      "sts:AssumeRole"
+                    ]
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        "roofing-contractor-ppl-api-3",
+                        "dev",
+                        "lambda"
+                      ]
+                    ]
+                  },
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:CreateLogStream",
+                          "logs:CreateLogGroup"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/roofing-contractor-ppl-api-3-dev*:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:PutLogEvents"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/roofing-contractor-ppl-api-3-dev*:*:*"
+                          }
+                        ]
+                      },
+                      {
+                        "$ref": "$[\"service\"][\"provider\"][\"iam\"][\"role\"][\"statements\"][0]"
+                      },
+                      {
+                        "$ref": "$[\"service\"][\"provider\"][\"iam\"][\"role\"][\"statements\"][1]"
+                      },
+                      {
+                        "$ref": "$[\"service\"][\"provider\"][\"iam\"][\"role\"][\"statements\"][2]"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Path": "/",
+              "RoleName": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    "roofing-contractor-ppl-api-3",
+                    "dev",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    "lambdaRole"
+                  ]
+                ]
+              }
+            }
+          },
+          "EnterpriseLogAccessIamRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "AWS": "arn:aws:iam::802587217904:root"
+                    },
+                    "Action": "sts:AssumeRole",
+                    "Condition": {
+                      "StringEquals": {
+                        "sts:ExternalId": "ServerlessEnterprise-c80076b4-0fb8-4d01-aa02-43b773fcfe14"
+                      }
+                    }
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": "LogFilterAccess",
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:FilterLogEvents"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::GetAtt": [
+                              "ApiLogGroup",
+                              "Arn"
+                            ]
+                          },
+                          {
+                            "Fn::GetAtt": [
+                              "GetRooferLogGroup",
+                              "Arn"
+                            ]
+                          },
+                          {
+                            "Fn::GetAtt": [
+                              "CreateRooferLogGroup",
+                              "Arn"
+                            ]
+                          },
+                          {
+                            "Fn::GetAtt": [
+                              "GetLeadLogGroup",
+                              "Arn"
+                            ]
+                          },
+                          {
+                            "Fn::GetAtt": [
+                              "CreateLeadLogGroup",
+                              "Arn"
+                            ]
+                          },
+                          {
+                            "Fn::GetAtt": [
+                              "CreateLeadPurchaseLogGroup",
+                              "Arn"
+                            ]
+                          },
+                          {
+                            "Fn::GetAtt": [
+                              "GetRooferLeadLogGroup",
+                              "Arn"
+                            ]
+                          },
+                          {
+                            "Fn::GetAtt": [
+                              "GetRooferByEmailLogGroup",
+                              "Arn"
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "ApiLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/roofing-contractor-ppl-api-3/dev/1658782164224-2022-07-25T20:49:24.224Z/roofing-contractor-ppl-api-3.zip"
+              },
+              "Handler": "s_api.handler",
+              "Runtime": "python3.8",
+              "FunctionName": "roofing-contractor-ppl-api-3-dev-api",
+              "MemorySize": 128,
+              "Timeout": 10,
+              "Environment": {
+                "Variables": {
+                  "PPL_TABLE": "ppl-table-3-dev",
+                  "REGION_NAME": "us-east-1",
+                  "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/906360379090/create-stripe-customer-dev-stripe-customer-creation-queue"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "ApiLogGroup"
+            ]
+          },
+          "GetRooferLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/roofing-contractor-ppl-api-3/dev/1658782164224-2022-07-25T20:49:24.224Z/roofing-contractor-ppl-api-3.zip"
+              },
+              "Handler": "s_getRoofer.handler",
+              "Runtime": "python3.8",
+              "FunctionName": "roofing-contractor-ppl-api-3-dev-getRoofer",
+              "MemorySize": 128,
+              "Timeout": 10,
+              "Environment": {
+                "Variables": {
+                  "PPL_TABLE": "ppl-table-3-dev",
+                  "REGION_NAME": "us-east-1",
+                  "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/906360379090/create-stripe-customer-dev-stripe-customer-creation-queue"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "GetRooferLogGroup"
+            ]
+          },
+          "CreateRooferLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/roofing-contractor-ppl-api-3/dev/1658782164224-2022-07-25T20:49:24.224Z/roofing-contractor-ppl-api-3.zip"
+              },
+              "Handler": "s_createRoofer.handler",
+              "Runtime": "python3.8",
+              "FunctionName": "roofing-contractor-ppl-api-3-dev-createRoofer",
+              "MemorySize": 128,
+              "Timeout": 10,
+              "Environment": {
+                "Variables": {
+                  "PPL_TABLE": "ppl-table-3-dev",
+                  "REGION_NAME": "us-east-1",
+                  "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/906360379090/create-stripe-customer-dev-stripe-customer-creation-queue"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "CreateRooferLogGroup"
+            ]
+          },
+          "GetLeadLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/roofing-contractor-ppl-api-3/dev/1658782164224-2022-07-25T20:49:24.224Z/roofing-contractor-ppl-api-3.zip"
+              },
+              "Handler": "s_getLead.handler",
+              "Runtime": "python3.8",
+              "FunctionName": "roofing-contractor-ppl-api-3-dev-getLead",
+              "MemorySize": 128,
+              "Timeout": 10,
+              "Environment": {
+                "Variables": {
+                  "PPL_TABLE": "ppl-table-3-dev",
+                  "REGION_NAME": "us-east-1",
+                  "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/906360379090/create-stripe-customer-dev-stripe-customer-creation-queue"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "GetLeadLogGroup"
+            ]
+          },
+          "CreateLeadLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/roofing-contractor-ppl-api-3/dev/1658782164224-2022-07-25T20:49:24.224Z/roofing-contractor-ppl-api-3.zip"
+              },
+              "Handler": "s_createLead.handler",
+              "Runtime": "python3.8",
+              "FunctionName": "roofing-contractor-ppl-api-3-dev-createLead",
+              "MemorySize": 128,
+              "Timeout": 10,
+              "Environment": {
+                "Variables": {
+                  "PPL_TABLE": "ppl-table-3-dev",
+                  "REGION_NAME": "us-east-1",
+                  "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/906360379090/create-stripe-customer-dev-stripe-customer-creation-queue"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "CreateLeadLogGroup"
+            ]
+          },
+          "CreateLeadPurchaseLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/roofing-contractor-ppl-api-3/dev/1658782164224-2022-07-25T20:49:24.224Z/roofing-contractor-ppl-api-3.zip"
+              },
+              "Handler": "s_createLeadPurchase.handler",
+              "Runtime": "python3.8",
+              "FunctionName": "roofing-contractor-ppl-api-3-dev-createLeadPurchase",
+              "MemorySize": 128,
+              "Timeout": 10,
+              "Environment": {
+                "Variables": {
+                  "PPL_TABLE": "ppl-table-3-dev",
+                  "REGION_NAME": "us-east-1",
+                  "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/906360379090/create-stripe-customer-dev-stripe-customer-creation-queue"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "CreateLeadPurchaseLogGroup"
+            ]
+          },
+          "GetRooferLeadLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/roofing-contractor-ppl-api-3/dev/1658782164224-2022-07-25T20:49:24.224Z/roofing-contractor-ppl-api-3.zip"
+              },
+              "Handler": "s_GetRooferLead.handler",
+              "Runtime": "python3.8",
+              "FunctionName": "roofing-contractor-ppl-api-3-dev-GetRooferLead",
+              "MemorySize": 128,
+              "Timeout": 10,
+              "Environment": {
+                "Variables": {
+                  "PPL_TABLE": "ppl-table-3-dev",
+                  "REGION_NAME": "us-east-1",
+                  "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/906360379090/create-stripe-customer-dev-stripe-customer-creation-queue"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "GetRooferLeadLogGroup"
+            ]
+          },
+          "GetRooferByEmailLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/roofing-contractor-ppl-api-3/dev/1658782164224-2022-07-25T20:49:24.224Z/roofing-contractor-ppl-api-3.zip"
+              },
+              "Handler": "s_GetRooferByEmail.handler",
+              "Runtime": "python3.8",
+              "FunctionName": "roofing-contractor-ppl-api-3-dev-GetRooferByEmail",
+              "MemorySize": 128,
+              "Timeout": 10,
+              "Environment": {
+                "Variables": {
+                  "PPL_TABLE": "ppl-table-3-dev",
+                  "REGION_NAME": "us-east-1",
+                  "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/906360379090/create-stripe-customer-dev-stripe-customer-creation-queue"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "GetRooferByEmailLogGroup"
+            ]
+          },
+          "ApiLambdaVersion4D3TAiAqC0i3d7gcWECYqGKKxlbF1fBa7FPApjQkIU": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ApiLambdaFunction"
+              },
+              "CodeSha256": "5+ApAvOrnZ0lCrIrn4JPbKz27S6n3HOfCyCEi1/A8vE="
+            }
+          },
+          "GetRooferLambdaVersioneG3HXIFkRHyYtPwUu8gnd1d7knKZBzoE43ltQkBUFO4": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetRooferLambdaFunction"
+              },
+              "CodeSha256": "5+ApAvOrnZ0lCrIrn4JPbKz27S6n3HOfCyCEi1/A8vE="
+            }
+          },
+          "CreateRooferLambdaVersionG6gywIPIdXrgDEWtzSyRQ7ylxgyzeggCNQzbjyXI8": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "CreateRooferLambdaFunction"
+              },
+              "CodeSha256": "5+ApAvOrnZ0lCrIrn4JPbKz27S6n3HOfCyCEi1/A8vE="
+            }
+          },
+          "GetLeadLambdaVersionJvl9WnQAACVFilUuf2hh6eKW3jjb1MhuHsd7hdCVoSk": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetLeadLambdaFunction"
+              },
+              "CodeSha256": "5+ApAvOrnZ0lCrIrn4JPbKz27S6n3HOfCyCEi1/A8vE="
+            }
+          },
+          "CreateLeadLambdaVersionMfkNQ08YoI8KzWz8DdECSsACWSlsXliFndu9On5xMM": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "CreateLeadLambdaFunction"
+              },
+              "CodeSha256": "5+ApAvOrnZ0lCrIrn4JPbKz27S6n3HOfCyCEi1/A8vE="
+            }
+          },
+          "CreateLeadPurchaseLambdaVersionoLyF7UPOC8Rhg2CFaJN8Q2V2GawBDD5lHZZ0YGUsk": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "CreateLeadPurchaseLambdaFunction"
+              },
+              "CodeSha256": "5+ApAvOrnZ0lCrIrn4JPbKz27S6n3HOfCyCEi1/A8vE="
+            }
+          },
+          "GetRooferLeadLambdaVersionKfIvt2RcmXUFISYhfIud86L8BXIncKQ9EER3w5gOvc": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetRooferLeadLambdaFunction"
+              },
+              "CodeSha256": "5+ApAvOrnZ0lCrIrn4JPbKz27S6n3HOfCyCEi1/A8vE="
+            }
+          },
+          "GetRooferByEmailLambdaVersionLIuuFlbvRzq2fEpJ8qvz3ht28EkHaVp3JaIBpzNZA": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetRooferByEmailLambdaFunction"
+              },
+              "CodeSha256": "5+ApAvOrnZ0lCrIrn4JPbKz27S6n3HOfCyCEi1/A8vE="
+            }
+          },
+          "HttpApi": {
+            "Type": "AWS::ApiGatewayV2::Api",
+            "Properties": {
+              "Name": "dev-roofing-contractor-ppl-api-3",
+              "ProtocolType": "HTTP"
+            }
+          },
+          "HttpApiLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/http-api/roofing-contractor-ppl-api-3-dev"
+            }
+          },
+          "HttpApiStage": {
+            "Type": "AWS::ApiGatewayV2::Stage",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "StageName": "$default",
+              "AutoDeploy": true,
+              "DefaultRouteSettings": {
+                "DetailedMetricsEnabled": false
+              },
+              "AccessLogSettings": {
+                "DestinationArn": {
+                  "Fn::GetAtt": [
+                    "HttpApiLogGroup",
+                    "Arn"
+                  ]
+                },
+                "Format": "{\"requestTime\":\"$context.requestTime\",\"requestId\":\"$context.requestId\",\"apiId\":\"$context.apiId\",\"resourcePath\":\"$context.routeKey\",\"path\":\"$context.path\",\"httpMethod\":\"$context.httpMethod\",\"stage\":\"$context.stage\",\"status\":\"$context.status\",\"integrationStatus\":\"$context.integrationStatus\",\"integrationLatency\":\"$context.integrationLatency\",\"responseLatency\":\"$context.responseLatency\",\"responseLength\":\"$context.responseLength\",\"errorMessage\":\"$context.error.message\",\"format\":\"SLS_HTTP_API_LOG\",\"version\":\"1.0.0\"}"
+              }
+            },
+            "DependsOn": "HttpApiLogGroup"
+          },
+          "ApiLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "ApiLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationApi": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"ApiLambdaPermissionHttpApi\"][\"Properties\"][\"FunctionName\"]"
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 10500
+            }
+          },
+          "HttpApiRouteDefault": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "$default",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationApi"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationApi"
+          },
+          "GetRooferLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "GetRooferLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationGetRoofer": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"GetRooferLambdaPermissionHttpApi\"][\"Properties\"][\"FunctionName\"]"
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 10500
+            }
+          },
+          "HttpApiRouteGetRooferProxyVar": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "GET /roofer/{proxy+}",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationGetRoofer"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationGetRoofer"
+          },
+          "CreateRooferLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "CreateRooferLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationCreateRoofer": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"CreateRooferLambdaPermissionHttpApi\"][\"Properties\"][\"FunctionName\"]"
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 10500
+            }
+          },
+          "HttpApiRoutePostRooferProxyVar": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "POST /roofer/{proxy+}",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationCreateRoofer"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationCreateRoofer"
+          },
+          "GetLeadLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "GetLeadLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationGetLead": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"GetLeadLambdaPermissionHttpApi\"][\"Properties\"][\"FunctionName\"]"
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 10500
+            }
+          },
+          "HttpApiRouteGetLeadProxyVar": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "GET /lead/{proxy+}",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationGetLead"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationGetLead"
+          },
+          "CreateLeadLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "CreateLeadLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationCreateLead": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"CreateLeadLambdaPermissionHttpApi\"][\"Properties\"][\"FunctionName\"]"
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 10500
+            }
+          },
+          "HttpApiRoutePostLeadProxyVar": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "POST /lead/{proxy+}",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationCreateLead"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationCreateLead"
+          },
+          "CreateLeadPurchaseLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "CreateLeadPurchaseLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationCreateLeadPurchase": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"CreateLeadPurchaseLambdaPermissionHttpApi\"][\"Properties\"][\"FunctionName\"]"
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 10500
+            }
+          },
+          "HttpApiRoutePostLeadpurchaseProxyVar": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "POST /lead_purchase/{proxy+}",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationCreateLeadPurchase"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationCreateLeadPurchase"
+          },
+          "GetRooferLeadLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "GetRooferLeadLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationGetRooferLead": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"GetRooferLeadLambdaPermissionHttpApi\"][\"Properties\"][\"FunctionName\"]"
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 10500
+            }
+          },
+          "HttpApiRoutePostRooferLeadProxyVar": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "POST /roofer/lead/{proxy+}",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationGetRooferLead"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationGetRooferLead"
+          },
+          "GetRooferByEmailLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "GetRooferByEmailLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationGetRooferByEmail": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"GetRooferByEmailLambdaPermissionHttpApi\"][\"Properties\"][\"FunctionName\"]"
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 10500
+            }
+          },
+          "HttpApiRouteGetRooferEmailProxyVar": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "GET /roofer/email/{proxy+}",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationGetRooferByEmail"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationGetRooferByEmail"
+          },
+          "pplDynamoDBTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "pk",
+                  "AttributeType": "S"
+                },
+                {
+                  "AttributeName": "sk",
+                  "AttributeType": "S"
+                },
+                {
+                  "AttributeName": "Email",
+                  "AttributeType": "S"
+                },
+                {
+                  "AttributeName": "StripeId",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "pk",
+                  "KeyType": "HASH"
+                },
+                {
+                  "AttributeName": "sk",
+                  "KeyType": "RANGE"
+                }
+              ],
+              "GlobalSecondaryIndexes": [
+                {
+                  "IndexName": "GS1",
+                  "KeySchema": [
+                    {
+                      "AttributeName": "sk",
+                      "KeyType": "HASH"
+                    }
+                  ],
+                  "Projection": {
+                    "ProjectionType": "ALL"
+                  },
+                  "ProvisionedThroughput": {
+                    "ReadCapacityUnits": 1,
+                    "WriteCapacityUnits": 1
+                  }
+                },
+                {
+                  "IndexName": "Email",
+                  "KeySchema": [
+                    {
+                      "AttributeName": "Email",
+                      "KeyType": "HASH"
+                    }
+                  ],
+                  "Projection": {
+                    "ProjectionType": "ALL"
+                  },
+                  "ProvisionedThroughput": {
+                    "ReadCapacityUnits": 1,
+                    "WriteCapacityUnits": 1
+                  }
+                },
+                {
+                  "IndexName": "StripeId",
+                  "KeySchema": [
+                    {
+                      "AttributeName": "StripeId",
+                      "KeyType": "HASH"
+                    }
+                  ],
+                  "Projection": {
+                    "ProjectionType": "ALL"
+                  },
+                  "ProvisionedThroughput": {
+                    "ReadCapacityUnits": 1,
+                    "WriteCapacityUnits": 1
+                  }
+                }
+              ],
+              "ProvisionedThroughput": {
+                "ReadCapacityUnits": 1,
+                "WriteCapacityUnits": 1
+              },
+              "TableName": "ppl-table-3-dev"
+            }
+          },
+          "CWLSubFilterApiLogGroupUsEast1": {
+            "Type": "AWS::Logs::SubscriptionFilter",
+            "Properties": {
+              "DestinationArn": "arn:aws:logs:us-east-1:802587217904:destination:c80076b4-0fb8-4d01-aa02-43b773fcfe14#rYNQcK70qD5VBMHF5w#roofing-contractor-ppl-api-3#dev",
+              "FilterPattern": "?\"REPORT RequestId: \" ?\"SERVERLESS_ENTERPRISE\"",
+              "LogGroupName": {
+                "Ref": "ApiLogGroup"
+              }
+            }
+          },
+          "CWLSubFilterGetRooferLogGroupUsEast1": {
+            "Type": "AWS::Logs::SubscriptionFilter",
+            "Properties": {
+              "DestinationArn": "arn:aws:logs:us-east-1:802587217904:destination:c80076b4-0fb8-4d01-aa02-43b773fcfe14#rYNQcK70qD5VBMHF5w#roofing-contractor-ppl-api-3#dev",
+              "FilterPattern": "?\"REPORT RequestId: \" ?\"SERVERLESS_ENTERPRISE\"",
+              "LogGroupName": {
+                "Ref": "GetRooferLogGroup"
+              }
+            }
+          },
+          "CWLSubFilterCreateRooferLogGroupUsEast1": {
+            "Type": "AWS::Logs::SubscriptionFilter",
+            "Properties": {
+              "DestinationArn": "arn:aws:logs:us-east-1:802587217904:destination:c80076b4-0fb8-4d01-aa02-43b773fcfe14#rYNQcK70qD5VBMHF5w#roofing-contractor-ppl-api-3#dev",
+              "FilterPattern": "?\"REPORT RequestId: \" ?\"SERVERLESS_ENTERPRISE\"",
+              "LogGroupName": {
+                "Ref": "CreateRooferLogGroup"
+              }
+            }
+          },
+          "CWLSubFilterGetLeadLogGroupUsEast1": {
+            "Type": "AWS::Logs::SubscriptionFilter",
+            "Properties": {
+              "DestinationArn": "arn:aws:logs:us-east-1:802587217904:destination:c80076b4-0fb8-4d01-aa02-43b773fcfe14#rYNQcK70qD5VBMHF5w#roofing-contractor-ppl-api-3#dev",
+              "FilterPattern": "?\"REPORT RequestId: \" ?\"SERVERLESS_ENTERPRISE\"",
+              "LogGroupName": {
+                "Ref": "GetLeadLogGroup"
+              }
+            }
+          },
+          "CWLSubFilterCreateLeadLogGroupUsEast1": {
+            "Type": "AWS::Logs::SubscriptionFilter",
+            "Properties": {
+              "DestinationArn": "arn:aws:logs:us-east-1:802587217904:destination:c80076b4-0fb8-4d01-aa02-43b773fcfe14#rYNQcK70qD5VBMHF5w#roofing-contractor-ppl-api-3#dev",
+              "FilterPattern": "?\"REPORT RequestId: \" ?\"SERVERLESS_ENTERPRISE\"",
+              "LogGroupName": {
+                "Ref": "CreateLeadLogGroup"
+              }
+            }
+          },
+          "CWLSubFilterCreateLeadPurchaseLogGroupUsEast1": {
+            "Type": "AWS::Logs::SubscriptionFilter",
+            "Properties": {
+              "DestinationArn": "arn:aws:logs:us-east-1:802587217904:destination:c80076b4-0fb8-4d01-aa02-43b773fcfe14#rYNQcK70qD5VBMHF5w#roofing-contractor-ppl-api-3#dev",
+              "FilterPattern": "?\"REPORT RequestId: \" ?\"SERVERLESS_ENTERPRISE\"",
+              "LogGroupName": {
+                "Ref": "CreateLeadPurchaseLogGroup"
+              }
+            }
+          },
+          "CWLSubFilterGetRooferLeadLogGroupUsEast1": {
+            "Type": "AWS::Logs::SubscriptionFilter",
+            "Properties": {
+              "DestinationArn": "arn:aws:logs:us-east-1:802587217904:destination:c80076b4-0fb8-4d01-aa02-43b773fcfe14#rYNQcK70qD5VBMHF5w#roofing-contractor-ppl-api-3#dev",
+              "FilterPattern": "?\"REPORT RequestId: \" ?\"SERVERLESS_ENTERPRISE\"",
+              "LogGroupName": {
+                "Ref": "GetRooferLeadLogGroup"
+              }
+            }
+          },
+          "CWLSubFilterGetRooferByEmailLogGroupUsEast1": {
+            "Type": "AWS::Logs::SubscriptionFilter",
+            "Properties": {
+              "DestinationArn": "arn:aws:logs:us-east-1:802587217904:destination:c80076b4-0fb8-4d01-aa02-43b773fcfe14#rYNQcK70qD5VBMHF5w#roofing-contractor-ppl-api-3#dev",
+              "FilterPattern": "?\"REPORT RequestId: \" ?\"SERVERLESS_ENTERPRISE\"",
+              "LogGroupName": {
+                "Ref": "GetRooferByEmailLogGroup"
+              }
+            }
+          },
+          "CWLSubFilterHttpApiLogGroupUsEast1": {
+            "Type": "AWS::Logs::SubscriptionFilter",
+            "Properties": {
+              "DestinationArn": "arn:aws:logs:us-east-1:802587217904:destination:c80076b4-0fb8-4d01-aa02-43b773fcfe14#rYNQcK70qD5VBMHF5w#roofing-contractor-ppl-api-3#dev",
+              "FilterPattern": "\"SLS_HTTP_API_LOG\"",
+              "LogGroupName": {
+                "Ref": "HttpApiLogGroup"
+              }
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            },
+            "Export": {
+              "Name": "sls-roofing-contractor-ppl-api-3-dev-ServerlessDeploymentBucketName"
+            }
+          },
+          "EnterpriseLogAccessIamRole": {
+            "Value": {
+              "Fn::GetAtt": [
+                "EnterpriseLogAccessIamRole",
+                "Arn"
+              ]
+            },
+            "Export": {
+              "Name": "sls-roofing-contractor-ppl-api-3-dev-EnterpriseLogAccessIamRole"
+            }
+          },
+          "ApiLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ApiLambdaVersion4D3TAiAqC0i3d7gcWECYqGKKxlbF1fBa7FPApjQkIU"
+            },
+            "Export": {
+              "Name": "sls-roofing-contractor-ppl-api-3-dev-ApiLambdaFunctionQualifiedArn"
+            }
+          },
+          "GetRooferLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetRooferLambdaVersioneG3HXIFkRHyYtPwUu8gnd1d7knKZBzoE43ltQkBUFO4"
+            },
+            "Export": {
+              "Name": "sls-roofing-contractor-ppl-api-3-dev-GetRooferLambdaFunctionQualifiedArn"
+            }
+          },
+          "CreateRooferLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "CreateRooferLambdaVersionG6gywIPIdXrgDEWtzSyRQ7ylxgyzeggCNQzbjyXI8"
+            },
+            "Export": {
+              "Name": "sls-roofing-contractor-ppl-api-3-dev-CreateRooferLambdaFunctionQualifiedArn"
+            }
+          },
+          "GetLeadLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetLeadLambdaVersionJvl9WnQAACVFilUuf2hh6eKW3jjb1MhuHsd7hdCVoSk"
+            },
+            "Export": {
+              "Name": "sls-roofing-contractor-ppl-api-3-dev-GetLeadLambdaFunctionQualifiedArn"
+            }
+          },
+          "CreateLeadLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "CreateLeadLambdaVersionMfkNQ08YoI8KzWz8DdECSsACWSlsXliFndu9On5xMM"
+            },
+            "Export": {
+              "Name": "sls-roofing-contractor-ppl-api-3-dev-CreateLeadLambdaFunctionQualifiedArn"
+            }
+          },
+          "CreateLeadPurchaseLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "CreateLeadPurchaseLambdaVersionoLyF7UPOC8Rhg2CFaJN8Q2V2GawBDD5lHZZ0YGUsk"
+            },
+            "Export": {
+              "Name": "sls-roofing-contractor-ppl-api-3-dev-CreateLeadPurchaseLambdaFunctionQualifiedArn"
+            }
+          },
+          "GetRooferLeadLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetRooferLeadLambdaVersionKfIvt2RcmXUFISYhfIud86L8BXIncKQ9EER3w5gOvc"
+            },
+            "Export": {
+              "Name": "sls-roofing-contractor-ppl-api-3-dev-GetRooferLeadLambdaFunctionQualifiedArn"
+            }
+          },
+          "GetRooferByEmailLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetRooferByEmailLambdaVersionLIuuFlbvRzq2fEpJ8qvz3ht28EkHaVp3JaIBpzNZA"
+            },
+            "Export": {
+              "Name": "sls-roofing-contractor-ppl-api-3-dev-GetRooferByEmailLambdaFunctionQualifiedArn"
+            }
+          },
+          "HttpApiId": {
+            "Description": "Id of the HTTP API",
+            "Value": {
+              "Ref": "HttpApi"
+            },
+            "Export": {
+              "Name": "sls-roofing-contractor-ppl-api-3-dev-HttpApiId"
+            }
+          },
+          "HttpApiUrl": {
+            "Description": "URL of the HTTP API",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  "https://",
+                  {
+                    "Ref": "HttpApi"
+                  },
+                  ".execute-api.",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ".",
+                  {
+                    "Ref": "AWS::URLSuffix"
+                  }
+                ]
+              ]
+            },
+            "Export": {
+              "Name": "sls-roofing-contractor-ppl-api-3-dev-HttpApiUrl"
+            }
+          }
+        }
+      },
+      "coreCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketEncryption": {
+                "ServerSideEncryptionConfiguration": [
+                  {
+                    "ServerSideEncryptionByDefault": {
+                      "SSEAlgorithm": "AES256"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "ServerlessDeploymentBucketPolicy": {
+            "Type": "AWS::S3::BucketPolicy",
+            "Properties": {
+              "Bucket": {
+                "Ref": "ServerlessDeploymentBucket"
+              },
+              "PolicyDocument": {
+                "Statement": [
+                  {
+                    "Action": "s3:*",
+                    "Effect": "Deny",
+                    "Principal": "*",
+                    "Resource": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            },
+                            "/*"
+                          ]
+                        ]
+                      },
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            }
+                          ]
+                        ]
+                      }
+                    ],
+                    "Condition": {
+                      "Bool": {
+                        "aws:SecureTransport": false
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          }
+        }
+      },
+      "logs": {
+        "httpApi": {
+          "format": "{\"requestTime\":\"$context.requestTime\",\"requestId\":\"$context.requestId\",\"apiId\":\"$context.apiId\",\"resourcePath\":\"$context.routeKey\",\"path\":\"$context.path\",\"httpMethod\":\"$context.httpMethod\",\"stage\":\"$context.stage\",\"status\":\"$context.status\",\"integrationStatus\":\"$context.integrationStatus\",\"integrationLatency\":\"$context.integrationLatency\",\"responseLatency\":\"$context.responseLatency\",\"responseLength\":\"$context.responseLength\",\"errorMessage\":\"$context.error.message\",\"format\":\"SLS_HTTP_API_LOG\",\"version\":\"1.0.0\"}"
+        }
+      },
+      "vpc": {}
+    },
+    "custom": {
+      "stripeLambdaName": "createStripeCustomer",
+      "tableName": "ppl-table-3-dev",
+      "wsgi": {
+        "app": "app.app"
+      },
+      "dynamodb": {
+        "start": {
+          "migrate": true
+        },
+        "stages": [
+          "dev"
+        ]
+      }
+    },
+    "plugins": [
+      "serverless-wsgi",
+      "serverless-python-requirements",
+      "serverless-dynamodb-local"
+    ],
+    "pluginsData": {},
+    "functions": {
+      "api": {
+        "handler": "s_api.handler",
+        "events": [
+          {
+            "httpApi": "*",
+            "resolvedMethod": "ANY"
+          }
+        ],
+        "name": "roofing-contractor-ppl-api-3-dev-api",
+        "package": {},
+        "memory": 128,
+        "timeout": 10,
+        "runtime": "python3.8",
+        "vpc": {},
+        "versionLogicalId": "ApiLambdaVersion4D3TAiAqC0i3d7gcWECYqGKKxlbF1fBa7FPApjQkIU"
+      },
+      "getRoofer": {
+        "handler": "s_getRoofer.handler",
+        "events": [
+          {
+            "httpApi": "GET /roofer/{proxy+}",
+            "resolvedMethod": "GET",
+            "resolvedPath": "/roofer/{proxy+}"
+          }
+        ],
+        "name": "roofing-contractor-ppl-api-3-dev-getRoofer",
+        "package": {},
+        "memory": 128,
+        "timeout": 10,
+        "runtime": "python3.8",
+        "vpc": {},
+        "versionLogicalId": "GetRooferLambdaVersioneG3HXIFkRHyYtPwUu8gnd1d7knKZBzoE43ltQkBUFO4"
+      },
+      "createRoofer": {
+        "handler": "s_createRoofer.handler",
+        "events": [
+          {
+            "httpApi": "POST /roofer/{proxy+}",
+            "resolvedMethod": "POST",
+            "resolvedPath": "/roofer/{proxy+}"
+          }
+        ],
+        "name": "roofing-contractor-ppl-api-3-dev-createRoofer",
+        "package": {},
+        "memory": 128,
+        "timeout": 10,
+        "runtime": "python3.8",
+        "vpc": {},
+        "versionLogicalId": "CreateRooferLambdaVersionG6gywIPIdXrgDEWtzSyRQ7ylxgyzeggCNQzbjyXI8"
+      },
+      "getLead": {
+        "handler": "s_getLead.handler",
+        "events": [
+          {
+            "httpApi": "GET /lead/{proxy+}",
+            "resolvedMethod": "GET",
+            "resolvedPath": "/lead/{proxy+}"
+          }
+        ],
+        "name": "roofing-contractor-ppl-api-3-dev-getLead",
+        "package": {},
+        "memory": 128,
+        "timeout": 10,
+        "runtime": "python3.8",
+        "vpc": {},
+        "versionLogicalId": "GetLeadLambdaVersionJvl9WnQAACVFilUuf2hh6eKW3jjb1MhuHsd7hdCVoSk"
+      },
+      "createLead": {
+        "handler": "s_createLead.handler",
+        "events": [
+          {
+            "httpApi": "POST /lead/{proxy+}",
+            "resolvedMethod": "POST",
+            "resolvedPath": "/lead/{proxy+}"
+          }
+        ],
+        "name": "roofing-contractor-ppl-api-3-dev-createLead",
+        "package": {},
+        "memory": 128,
+        "timeout": 10,
+        "runtime": "python3.8",
+        "vpc": {},
+        "versionLogicalId": "CreateLeadLambdaVersionMfkNQ08YoI8KzWz8DdECSsACWSlsXliFndu9On5xMM"
+      },
+      "createLeadPurchase": {
+        "handler": "s_createLeadPurchase.handler",
+        "events": [
+          {
+            "httpApi": "POST /lead_purchase/{proxy+}",
+            "resolvedMethod": "POST",
+            "resolvedPath": "/lead_purchase/{proxy+}"
+          }
+        ],
+        "name": "roofing-contractor-ppl-api-3-dev-createLeadPurchase",
+        "package": {},
+        "memory": 128,
+        "timeout": 10,
+        "runtime": "python3.8",
+        "vpc": {},
+        "versionLogicalId": "CreateLeadPurchaseLambdaVersionoLyF7UPOC8Rhg2CFaJN8Q2V2GawBDD5lHZZ0YGUsk"
+      },
+      "GetRooferLead": {
+        "handler": "s_GetRooferLead.handler",
+        "events": [
+          {
+            "httpApi": "POST /roofer/lead/{proxy+}",
+            "resolvedMethod": "POST",
+            "resolvedPath": "/roofer/lead/{proxy+}"
+          }
+        ],
+        "name": "roofing-contractor-ppl-api-3-dev-GetRooferLead",
+        "package": {},
+        "memory": 128,
+        "timeout": 10,
+        "runtime": "python3.8",
+        "vpc": {},
+        "versionLogicalId": "GetRooferLeadLambdaVersionKfIvt2RcmXUFISYhfIud86L8BXIncKQ9EER3w5gOvc"
+      },
+      "GetRooferByEmail": {
+        "handler": "s_GetRooferByEmail.handler",
+        "events": [
+          {
+            "httpApi": "GET /roofer/email/{proxy+}",
+            "resolvedMethod": "GET",
+            "resolvedPath": "/roofer/email/{proxy+}"
+          }
+        ],
+        "name": "roofing-contractor-ppl-api-3-dev-GetRooferByEmail",
+        "package": {},
+        "memory": 128,
+        "timeout": 10,
+        "runtime": "python3.8",
+        "vpc": {},
+        "versionLogicalId": "GetRooferByEmailLambdaVersionLIuuFlbvRzq2fEpJ8qvz3ht28EkHaVp3JaIBpzNZA"
+      }
+    },
+    "resources": {
+      "Resources": {
+        "pplDynamoDBTable": {
+          "Type": "AWS::DynamoDB::Table",
+          "Properties": {
+            "AttributeDefinitions": [
+              {
+                "AttributeName": "pk",
+                "AttributeType": "S"
+              },
+              {
+                "AttributeName": "sk",
+                "AttributeType": "S"
+              },
+              {
+                "AttributeName": "Email",
+                "AttributeType": "S"
+              },
+              {
+                "AttributeName": "StripeId",
+                "AttributeType": "S"
+              }
+            ],
+            "KeySchema": [
+              {
+                "AttributeName": "pk",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "sk",
+                "KeyType": "RANGE"
+              }
+            ],
+            "GlobalSecondaryIndexes": [
+              {
+                "IndexName": "GS1",
+                "KeySchema": [
+                  {
+                    "AttributeName": "sk",
+                    "KeyType": "HASH"
+                  }
+                ],
+                "Projection": {
+                  "ProjectionType": "ALL"
+                },
+                "ProvisionedThroughput": {
+                  "ReadCapacityUnits": 1,
+                  "WriteCapacityUnits": 1
+                }
+              },
+              {
+                "IndexName": "Email",
+                "KeySchema": [
+                  {
+                    "AttributeName": "Email",
+                    "KeyType": "HASH"
+                  }
+                ],
+                "Projection": {
+                  "ProjectionType": "ALL"
+                },
+                "ProvisionedThroughput": {
+                  "ReadCapacityUnits": 1,
+                  "WriteCapacityUnits": 1
+                }
+              },
+              {
+                "IndexName": "StripeId",
+                "KeySchema": [
+                  {
+                    "AttributeName": "StripeId",
+                    "KeyType": "HASH"
+                  }
+                ],
+                "Projection": {
+                  "ProjectionType": "ALL"
+                },
+                "ProvisionedThroughput": {
+                  "ReadCapacityUnits": 1,
+                  "WriteCapacityUnits": 1
+                }
+              }
+            ],
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 1,
+              "WriteCapacityUnits": 1
+            },
+            "TableName": "ppl-table-3-dev"
+          }
+        }
+      },
+      "Outputs": {}
+    },
+    "configValidationMode": "warn",
+    "serviceFilename": "serverless.yml",
+    "initialServerlessConfig": {
+      "org": "groros",
+      "app": "pay-per-lead-project",
+      "service": "roofing-contractor-ppl-api-3",
+      "frameworkVersion": "3",
+      "custom": {
+        "$ref": "$[\"service\"][\"custom\"]"
+      },
+      "provider": {
+        "$ref": "$[\"service\"][\"provider\"]"
+      },
+      "functions": {
+        "$ref": "$[\"service\"][\"functions\"]"
+      },
+      "plugins": {
+        "$ref": "$[\"service\"][\"plugins\"]"
+      },
+      "resources": {
+        "$ref": "$[\"service\"][\"resources\"]"
+      }
+    },
+    "app": "pay-per-lead-project",
+    "org": "groros",
+    "layers": {},
+    "isDashboardMonitoringPreconfigured": true,
+    "isDashboardAppPreconfigured": true,
+    "orgUid": "c80076b4-0fb8-4d01-aa02-43b773fcfe14",
+    "appUid": "rYNQcK70qD5VBMHF5w",
+    "artifact": "/Users/georgiosroros/AWS-projects/roofing-contractor-ppl-api-3/.serverless/roofing-contractor-ppl-api-3.zip"
+  },
+  "package": {
+    "artifactDirectoryName": "serverless/roofing-contractor-ppl-api-3/dev/1658782164224-2022-07-25T20:49:24.224Z",
+    "artifact": "roofing-contractor-ppl-api-3.zip"
+  }
+}

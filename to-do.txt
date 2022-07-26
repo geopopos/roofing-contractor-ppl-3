@@ -1,0 +1,2 @@
+[x] update crud actions for leads
+[x] set up search by stripe_id endpoint for roofers
