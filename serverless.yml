@@ -17,7 +17,7 @@ custom:
 
 provider:
   name: aws
-  # runtime: python3.8
+  runtime: python
   stage: dev
   region: us-east-1
   profile: serverless-admin
