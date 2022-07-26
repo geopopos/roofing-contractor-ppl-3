@@ -15,7 +15,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-python@v3
-    - uses: serverless/github-action@v3.1
     - uses: syphar/restore-virtualenv@v1
       id: cache-virtualenv
       with:
@@ -30,14 +29,14 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-    - name: set up environment for deploy
-      run: |
-        ls -la
-        source init.sh
-      shell: bash
+    # - name: set up environment for deploy
+    #   run: |
+    #     ls -la
+    #     source init.sh
+    #   shell: bash
     - run: npm ci
     - name: serverless deploy
-      # uses: serverless/github-action@v3.1
+      uses: serverless/github-action@v3.1
       with:
         args: deploy
       env:
