@@ -1,3 +1,5 @@
 [x] update crud actions for leads
 [x] set up search by stripe_id endpoint for roofers
 [x] update serverless access key in github secrets
+[x] set up email exclusivity for roofer database
+[] set up dead letter queue on failed function calls

@@ -42,6 +42,11 @@ def create_roofer():
     if not pk or not sk or not "Email" in request.json.keys():
         return jsonify({'error': 'Please provide "pk"'}), 400
 
+
+    roofer_exists = get_roofer_by_email(request.json['Email']).json
+    if roofer_exists:
+        return jsonify({'error': 'Roofer already exists'}), 400
+
     dynamo_data['pk'] = {'S': pk}
     dynamo_data['sk'] = {'S': sk}
     dynamodb_client.put_item(
@@ -83,7 +88,7 @@ def get_roofer(pk):
 
     item = response.get('Items')[0]
     if not item:
-        return jsonify({'error': 'Could not find user with provided "pk"'}), 404
+        return jsonify({'error': 'Could not find user with provided "pk"'})
 
     dict_data = dynamo.to_dict(item)
 
@@ -250,7 +255,10 @@ def get_roofer_by_email(email):
     except BaseException as error:
         print("Unknown error while querying: " + error.response['Error']['Message'])
 
-    item = response.get('Items')[0]
+    try:
+        item = response.get('Items')[0]
+    except IndexError:
+        return jsonify([])
     if not item:
         return jsonify({'error': 'Could not find user with provided "email"'}), 404
 
