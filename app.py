@@ -39,8 +39,8 @@ def create_roofer():
     sk = "ROOFER"
     dynamo_data = dynamo.to_item(request.json) 
     print(f'::REQUEST:JSON ==> {request.json}')
-    if not pk or not sk or not "Email" in request.json.keys():
-        return jsonify({'error': 'Please provide "pk"'}), 400
+    if not "Email" in request.json.keys():
+        return jsonify({'error': 'Please provide key value pair with key "Email"'}), 400
 
 
     roofer_exists = get_roofer_by_email(request.json['Email']).json
