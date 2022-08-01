@@ -87,9 +87,10 @@ def get_roofer(pk):
     except BaseException as error:
         print("Unknown error while querying: " + error.response['Error']['Message'])
 
-    item = response.get('Items')[0]
+    item = response.get('Items', [])
     if not item:
         return jsonify({'error': 'Could not find user with provided "pk"'})
+    item = item[0]
 
     dict_data = dynamo.to_dict(item)
 
