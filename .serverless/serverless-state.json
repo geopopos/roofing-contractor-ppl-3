@@ -6,7 +6,7 @@
     },
     "provider": {
       "name": "aws",
-      "runtime": "python",
+      "runtime": "python3.8",
       "stage": "dev",
       "region": "us-east-1",
       "profile": "serverless-admin",
@@ -354,10 +354,10 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/roofing-contractor-ppl-api-3/dev/1658808464626-2022-07-26T04:07:44.626Z/roofing-contractor-ppl-api-3.zip"
+                "S3Key": "serverless/roofing-contractor-ppl-api-3/dev/1659146856334-2022-07-30T02:07:36.334Z/roofing-contractor-ppl-api-3.zip"
               },
               "Handler": "s_api.handler",
-              "Runtime": "python",
+              "Runtime": "python3.8",
               "FunctionName": "roofing-contractor-ppl-api-3-dev-api",
               "MemorySize": 128,
               "Timeout": 10,
@@ -386,10 +386,10 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/roofing-contractor-ppl-api-3/dev/1658808464626-2022-07-26T04:07:44.626Z/roofing-contractor-ppl-api-3.zip"
+                "S3Key": "serverless/roofing-contractor-ppl-api-3/dev/1659146856334-2022-07-30T02:07:36.334Z/roofing-contractor-ppl-api-3.zip"
               },
               "Handler": "s_getRoofer.handler",
-              "Runtime": "python",
+              "Runtime": "python3.8",
               "FunctionName": "roofing-contractor-ppl-api-3-dev-getRoofer",
               "MemorySize": 128,
               "Timeout": 10,
@@ -418,10 +418,10 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/roofing-contractor-ppl-api-3/dev/1658808464626-2022-07-26T04:07:44.626Z/roofing-contractor-ppl-api-3.zip"
+                "S3Key": "serverless/roofing-contractor-ppl-api-3/dev/1659146856334-2022-07-30T02:07:36.334Z/roofing-contractor-ppl-api-3.zip"
               },
               "Handler": "s_createRoofer.handler",
-              "Runtime": "python",
+              "Runtime": "python3.8",
               "FunctionName": "roofing-contractor-ppl-api-3-dev-createRoofer",
               "MemorySize": 128,
               "Timeout": 10,
@@ -450,10 +450,10 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/roofing-contractor-ppl-api-3/dev/1658808464626-2022-07-26T04:07:44.626Z/roofing-contractor-ppl-api-3.zip"
+                "S3Key": "serverless/roofing-contractor-ppl-api-3/dev/1659146856334-2022-07-30T02:07:36.334Z/roofing-contractor-ppl-api-3.zip"
               },
               "Handler": "s_getLead.handler",
-              "Runtime": "python",
+              "Runtime": "python3.8",
               "FunctionName": "roofing-contractor-ppl-api-3-dev-getLead",
               "MemorySize": 128,
               "Timeout": 10,
@@ -482,10 +482,10 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/roofing-contractor-ppl-api-3/dev/1658808464626-2022-07-26T04:07:44.626Z/roofing-contractor-ppl-api-3.zip"
+                "S3Key": "serverless/roofing-contractor-ppl-api-3/dev/1659146856334-2022-07-30T02:07:36.334Z/roofing-contractor-ppl-api-3.zip"
               },
               "Handler": "s_createLead.handler",
-              "Runtime": "python",
+              "Runtime": "python3.8",
               "FunctionName": "roofing-contractor-ppl-api-3-dev-createLead",
               "MemorySize": 128,
               "Timeout": 10,
@@ -514,10 +514,10 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/roofing-contractor-ppl-api-3/dev/1658808464626-2022-07-26T04:07:44.626Z/roofing-contractor-ppl-api-3.zip"
+                "S3Key": "serverless/roofing-contractor-ppl-api-3/dev/1659146856334-2022-07-30T02:07:36.334Z/roofing-contractor-ppl-api-3.zip"
               },
               "Handler": "s_createLeadPurchase.handler",
-              "Runtime": "python",
+              "Runtime": "python3.8",
               "FunctionName": "roofing-contractor-ppl-api-3-dev-createLeadPurchase",
               "MemorySize": 128,
               "Timeout": 10,
@@ -546,10 +546,10 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/roofing-contractor-ppl-api-3/dev/1658808464626-2022-07-26T04:07:44.626Z/roofing-contractor-ppl-api-3.zip"
+                "S3Key": "serverless/roofing-contractor-ppl-api-3/dev/1659146856334-2022-07-30T02:07:36.334Z/roofing-contractor-ppl-api-3.zip"
               },
               "Handler": "s_GetRooferLead.handler",
-              "Runtime": "python",
+              "Runtime": "python3.8",
               "FunctionName": "roofing-contractor-ppl-api-3-dev-GetRooferLead",
               "MemorySize": 128,
               "Timeout": 10,
@@ -578,10 +578,10 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/roofing-contractor-ppl-api-3/dev/1658808464626-2022-07-26T04:07:44.626Z/roofing-contractor-ppl-api-3.zip"
+                "S3Key": "serverless/roofing-contractor-ppl-api-3/dev/1659146856334-2022-07-30T02:07:36.334Z/roofing-contractor-ppl-api-3.zip"
               },
               "Handler": "s_GetRooferByEmail.handler",
-              "Runtime": "python",
+              "Runtime": "python3.8",
               "FunctionName": "roofing-contractor-ppl-api-3-dev-GetRooferByEmail",
               "MemorySize": 128,
               "Timeout": 10,
@@ -603,84 +603,84 @@
               "GetRooferByEmailLogGroup"
             ]
           },
-          "ApiLambdaVersionSb6zRCFZuXicSS3ThLVSUDrw1f5QipbEtLMBgCRwOQ": {
+          "ApiLambdaVersionh1Oa4D7Z4FkFlFwBTrXPCcik3t5jnf2zKfBVXg": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "ApiLambdaFunction"
               },
-              "CodeSha256": "eXD9UDKCS/oxao2bH5PUGA2rOKaKXrokWG2ye9hLjgA="
+              "CodeSha256": "dYs8vlQ3As0LlpJeqiau+C0+8qmibMcT2xDVqXjViKE="
             }
           },
-          "GetRooferLambdaVersionmF9ufucYX1ZQnWgLaxDtsZDfI1RdGcZBMm53QWs": {
+          "GetRooferLambdaVersionsiM6OVeU7gqOkeKkEMPsm3cwpXxrPH9ffjTEzO4gTY": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetRooferLambdaFunction"
               },
-              "CodeSha256": "eXD9UDKCS/oxao2bH5PUGA2rOKaKXrokWG2ye9hLjgA="
+              "CodeSha256": "dYs8vlQ3As0LlpJeqiau+C0+8qmibMcT2xDVqXjViKE="
             }
           },
-          "CreateRooferLambdaVersion8I8IGvbR3EjqpzPQ2hvpVAKALflPBvEgmRlllPkBuYE": {
+          "CreateRooferLambdaVersionGvTsgwOhA1Eq7ASINglQqxF4js7H6htwPM5qXu4maY": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "CreateRooferLambdaFunction"
               },
-              "CodeSha256": "eXD9UDKCS/oxao2bH5PUGA2rOKaKXrokWG2ye9hLjgA="
+              "CodeSha256": "dYs8vlQ3As0LlpJeqiau+C0+8qmibMcT2xDVqXjViKE="
             }
           },
-          "GetLeadLambdaVersionMI0Bbq5baa2MNdCzSoOuzCtZAXhXpLxmb1GP3R8dw": {
+          "GetLeadLambdaVersionPya21AsHPuu7H3O1WkW9Txrujc19ZibXzLH8Crjsek": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetLeadLambdaFunction"
               },
-              "CodeSha256": "eXD9UDKCS/oxao2bH5PUGA2rOKaKXrokWG2ye9hLjgA="
+              "CodeSha256": "dYs8vlQ3As0LlpJeqiau+C0+8qmibMcT2xDVqXjViKE="
             }
           },
-          "CreateLeadLambdaVersionLLtCt2I2kIchritDxlogiwBPuLSxjh9t11Da0IxhA": {
+          "CreateLeadLambdaVersionFxTFXoirxGwmi2q7IRKWEkInbxjezPsZlWPKvIKPcM": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "CreateLeadLambdaFunction"
               },
-              "CodeSha256": "eXD9UDKCS/oxao2bH5PUGA2rOKaKXrokWG2ye9hLjgA="
+              "CodeSha256": "dYs8vlQ3As0LlpJeqiau+C0+8qmibMcT2xDVqXjViKE="
             }
           },
-          "CreateLeadPurchaseLambdaVersion7zwdxWDU9l1T9p32C8tLNXdapPdn6VDZfru7DgVAI": {
+          "CreateLeadPurchaseLambdaVersionzUAYygddsDc8i0ikmcBVWvFCYpZ5r3WFpqL4XMaSY": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "CreateLeadPurchaseLambdaFunction"
               },
-              "CodeSha256": "eXD9UDKCS/oxao2bH5PUGA2rOKaKXrokWG2ye9hLjgA="
+              "CodeSha256": "dYs8vlQ3As0LlpJeqiau+C0+8qmibMcT2xDVqXjViKE="
             }
           },
-          "GetRooferLeadLambdaVersionJGMwXZlsablxkdq1oC5pSIqfJZfvMsocwcb4mT3PXo": {
+          "GetRooferLeadLambdaVersionsIIPgjYw1IsUv2RnkjZYwU0XHjnqD8gDIUEuYDgkU": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetRooferLeadLambdaFunction"
               },
-              "CodeSha256": "eXD9UDKCS/oxao2bH5PUGA2rOKaKXrokWG2ye9hLjgA="
+              "CodeSha256": "dYs8vlQ3As0LlpJeqiau+C0+8qmibMcT2xDVqXjViKE="
             }
           },
-          "GetRooferByEmailLambdaVersionM51wPyuz7ZdmUaxTdjSEiiUUhf9Ng6DJu0iWPM5sPFk": {
+          "GetRooferByEmailLambdaVersiongTmtEn4CCc6B8mWD1awp85Y8hX1XCW4HzyMZ4Q8Tyo": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetRooferByEmailLambdaFunction"
               },
-              "CodeSha256": "eXD9UDKCS/oxao2bH5PUGA2rOKaKXrokWG2ye9hLjgA="
+              "CodeSha256": "dYs8vlQ3As0LlpJeqiau+C0+8qmibMcT2xDVqXjViKE="
             }
           },
           "HttpApi": {
@@ -1497,7 +1497,7 @@
           "ApiLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "ApiLambdaVersionSb6zRCFZuXicSS3ThLVSUDrw1f5QipbEtLMBgCRwOQ"
+              "Ref": "ApiLambdaVersionh1Oa4D7Z4FkFlFwBTrXPCcik3t5jnf2zKfBVXg"
             },
             "Export": {
               "Name": "sls-roofing-contractor-ppl-api-3-dev-ApiLambdaFunctionQualifiedArn"
@@ -1506,7 +1506,7 @@
           "GetRooferLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetRooferLambdaVersionmF9ufucYX1ZQnWgLaxDtsZDfI1RdGcZBMm53QWs"
+              "Ref": "GetRooferLambdaVersionsiM6OVeU7gqOkeKkEMPsm3cwpXxrPH9ffjTEzO4gTY"
             },
             "Export": {
               "Name": "sls-roofing-contractor-ppl-api-3-dev-GetRooferLambdaFunctionQualifiedArn"
@@ -1515,7 +1515,7 @@
           "CreateRooferLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "CreateRooferLambdaVersion8I8IGvbR3EjqpzPQ2hvpVAKALflPBvEgmRlllPkBuYE"
+              "Ref": "CreateRooferLambdaVersionGvTsgwOhA1Eq7ASINglQqxF4js7H6htwPM5qXu4maY"
             },
             "Export": {
               "Name": "sls-roofing-contractor-ppl-api-3-dev-CreateRooferLambdaFunctionQualifiedArn"
@@ -1524,7 +1524,7 @@
           "GetLeadLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetLeadLambdaVersionMI0Bbq5baa2MNdCzSoOuzCtZAXhXpLxmb1GP3R8dw"
+              "Ref": "GetLeadLambdaVersionPya21AsHPuu7H3O1WkW9Txrujc19ZibXzLH8Crjsek"
             },
             "Export": {
               "Name": "sls-roofing-contractor-ppl-api-3-dev-GetLeadLambdaFunctionQualifiedArn"
@@ -1533,7 +1533,7 @@
           "CreateLeadLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "CreateLeadLambdaVersionLLtCt2I2kIchritDxlogiwBPuLSxjh9t11Da0IxhA"
+              "Ref": "CreateLeadLambdaVersionFxTFXoirxGwmi2q7IRKWEkInbxjezPsZlWPKvIKPcM"
             },
             "Export": {
               "Name": "sls-roofing-contractor-ppl-api-3-dev-CreateLeadLambdaFunctionQualifiedArn"
@@ -1542,7 +1542,7 @@
           "CreateLeadPurchaseLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "CreateLeadPurchaseLambdaVersion7zwdxWDU9l1T9p32C8tLNXdapPdn6VDZfru7DgVAI"
+              "Ref": "CreateLeadPurchaseLambdaVersionzUAYygddsDc8i0ikmcBVWvFCYpZ5r3WFpqL4XMaSY"
             },
             "Export": {
               "Name": "sls-roofing-contractor-ppl-api-3-dev-CreateLeadPurchaseLambdaFunctionQualifiedArn"
@@ -1551,7 +1551,7 @@
           "GetRooferLeadLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetRooferLeadLambdaVersionJGMwXZlsablxkdq1oC5pSIqfJZfvMsocwcb4mT3PXo"
+              "Ref": "GetRooferLeadLambdaVersionsIIPgjYw1IsUv2RnkjZYwU0XHjnqD8gDIUEuYDgkU"
             },
             "Export": {
               "Name": "sls-roofing-contractor-ppl-api-3-dev-GetRooferLeadLambdaFunctionQualifiedArn"
@@ -1560,7 +1560,7 @@
           "GetRooferByEmailLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetRooferByEmailLambdaVersionM51wPyuz7ZdmUaxTdjSEiiUUhf9Ng6DJu0iWPM5sPFk"
+              "Ref": "GetRooferByEmailLambdaVersiongTmtEn4CCc6B8mWD1awp85Y8hX1XCW4HzyMZ4Q8Tyo"
             },
             "Export": {
               "Name": "sls-roofing-contractor-ppl-api-3-dev-GetRooferByEmailLambdaFunctionQualifiedArn"
@@ -1725,9 +1725,9 @@
         "package": {},
         "memory": 128,
         "timeout": 10,
-        "runtime": "python",
+        "runtime": "python3.8",
         "vpc": {},
-        "versionLogicalId": "ApiLambdaVersionSb6zRCFZuXicSS3ThLVSUDrw1f5QipbEtLMBgCRwOQ"
+        "versionLogicalId": "ApiLambdaVersionh1Oa4D7Z4FkFlFwBTrXPCcik3t5jnf2zKfBVXg"
       },
       "getRoofer": {
         "handler": "s_getRoofer.handler",
@@ -1742,9 +1742,9 @@
         "package": {},
         "memory": 128,
         "timeout": 10,
-        "runtime": "python",
+        "runtime": "python3.8",
         "vpc": {},
-        "versionLogicalId": "GetRooferLambdaVersionmF9ufucYX1ZQnWgLaxDtsZDfI1RdGcZBMm53QWs"
+        "versionLogicalId": "GetRooferLambdaVersionsiM6OVeU7gqOkeKkEMPsm3cwpXxrPH9ffjTEzO4gTY"
       },
       "createRoofer": {
         "handler": "s_createRoofer.handler",
@@ -1759,9 +1759,9 @@
         "package": {},
         "memory": 128,
         "timeout": 10,
-        "runtime": "python",
+        "runtime": "python3.8",
         "vpc": {},
-        "versionLogicalId": "CreateRooferLambdaVersion8I8IGvbR3EjqpzPQ2hvpVAKALflPBvEgmRlllPkBuYE"
+        "versionLogicalId": "CreateRooferLambdaVersionGvTsgwOhA1Eq7ASINglQqxF4js7H6htwPM5qXu4maY"
       },
       "getLead": {
         "handler": "s_getLead.handler",
@@ -1776,9 +1776,9 @@
         "package": {},
         "memory": 128,
         "timeout": 10,
-        "runtime": "python",
+        "runtime": "python3.8",
         "vpc": {},
-        "versionLogicalId": "GetLeadLambdaVersionMI0Bbq5baa2MNdCzSoOuzCtZAXhXpLxmb1GP3R8dw"
+        "versionLogicalId": "GetLeadLambdaVersionPya21AsHPuu7H3O1WkW9Txrujc19ZibXzLH8Crjsek"
       },
       "createLead": {
         "handler": "s_createLead.handler",
@@ -1793,9 +1793,9 @@
         "package": {},
         "memory": 128,
         "timeout": 10,
-        "runtime": "python",
+        "runtime": "python3.8",
         "vpc": {},
-        "versionLogicalId": "CreateLeadLambdaVersionLLtCt2I2kIchritDxlogiwBPuLSxjh9t11Da0IxhA"
+        "versionLogicalId": "CreateLeadLambdaVersionFxTFXoirxGwmi2q7IRKWEkInbxjezPsZlWPKvIKPcM"
       },
       "createLeadPurchase": {
         "handler": "s_createLeadPurchase.handler",
@@ -1810,9 +1810,9 @@
         "package": {},
         "memory": 128,
         "timeout": 10,
-        "runtime": "python",
+        "runtime": "python3.8",
         "vpc": {},
-        "versionLogicalId": "CreateLeadPurchaseLambdaVersion7zwdxWDU9l1T9p32C8tLNXdapPdn6VDZfru7DgVAI"
+        "versionLogicalId": "CreateLeadPurchaseLambdaVersionzUAYygddsDc8i0ikmcBVWvFCYpZ5r3WFpqL4XMaSY"
       },
       "GetRooferLead": {
         "handler": "s_GetRooferLead.handler",
@@ -1827,9 +1827,9 @@
         "package": {},
         "memory": 128,
         "timeout": 10,
-        "runtime": "python",
+        "runtime": "python3.8",
         "vpc": {},
-        "versionLogicalId": "GetRooferLeadLambdaVersionJGMwXZlsablxkdq1oC5pSIqfJZfvMsocwcb4mT3PXo"
+        "versionLogicalId": "GetRooferLeadLambdaVersionsIIPgjYw1IsUv2RnkjZYwU0XHjnqD8gDIUEuYDgkU"
       },
       "GetRooferByEmail": {
         "handler": "s_GetRooferByEmail.handler",
@@ -1844,9 +1844,9 @@
         "package": {},
         "memory": 128,
         "timeout": 10,
-        "runtime": "python",
+        "runtime": "python3.8",
         "vpc": {},
-        "versionLogicalId": "GetRooferByEmailLambdaVersionM51wPyuz7ZdmUaxTdjSEiiUUhf9Ng6DJu0iWPM5sPFk"
+        "versionLogicalId": "GetRooferByEmailLambdaVersiongTmtEn4CCc6B8mWD1awp85Y8hX1XCW4HzyMZ4Q8Tyo"
       }
     },
     "resources": {
@@ -1975,7 +1975,7 @@
     "artifact": "/Users/georgiosroros/AWS-projects/roofing-contractor-ppl-api-3/.serverless/roofing-contractor-ppl-api-3.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/roofing-contractor-ppl-api-3/dev/1658808464626-2022-07-26T04:07:44.626Z",
+    "artifactDirectoryName": "serverless/roofing-contractor-ppl-api-3/dev/1659146856334-2022-07-30T02:07:36.334Z",
     "artifact": "roofing-contractor-ppl-api-3.zip"
   }
 }

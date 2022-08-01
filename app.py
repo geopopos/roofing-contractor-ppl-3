@@ -3,7 +3,9 @@ import uuid
 import boto3
 import dynamo
 import json
+import requests
 from flask import Flask, jsonify, make_response, request
+from urllib import parse
 
 from botocore.exceptions import ClientError
 ERROR_HELP_STRINGS = {
@@ -24,11 +26,13 @@ app = Flask(__name__)
 
 dynamodb_client = boto3.client('dynamodb')
 sqs_client = boto3.client('sqs')
+roofing_api_url = "https://e6b1hc9rfg.execute-api.us-east-1.amazonaws.com"
 
 if os.environ.get('IS_OFFLINE'):
     dynamodb_client = boto3.client(
         'dynamodb', region_name='localhost', endpoint_url='http://localhost:8000'
     )
+    roofing_api_url = "http://localhost:2000"
 
 
 PPL_TABLE = os.environ['PPL_TABLE']
@@ -41,10 +45,13 @@ def create_roofer():
     print(f'::REQUEST:JSON ==> {request.json}')
     if not "Email" in request.json.keys():
         return jsonify({'error': 'Please provide key value pair with key "Email"'}), 400
+    # check if email already exists in roofer db
 
+    get_roofer_by_email_url = f"{roofing_api_url}/roofer/email/{parse.quote(request.json['Email'])}"
+    response = requests.request("GET", get_roofer_by_email_url)
 
-    roofer_exists = get_roofer_by_email(request.json['Email']).json
-    if roofer_exists:
+    roofer_record = json.loads(response.text)
+    if roofer_record:
         return jsonify({'error': 'Roofer already exists'}), 400
 
     dynamo_data['pk'] = {'S': pk}
@@ -57,13 +64,7 @@ def create_roofer():
     if "First Name" in request.json.keys():
         name = f"{request.json['First Name']} {request.json['Last Name']}"
     email = request.json['Email']
-    phone = request.json.get('Phone', None)
 
-
-    sqs_client.send_message(
-        QueueUrl=os.environ['SQS_QUEUE_URL'],
-        MessageBody=json.dumps({'roofer_id': pk, 'email': email, 'phone': phone, 'name': name})
-    )
 
     return jsonify({'pk': pk, 'sk': sk, 'email': email}), 201
 
@@ -266,7 +267,7 @@ def get_roofer_by_email(email):
 
     return jsonify(
         dict_data
-    )
+    ), 200
 
 @app.route('/roofer/stripe_id/<string:StripeId>', methods=['GET'])
 def get_roofer_by_stripe_id(StripeId):
