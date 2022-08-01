@@ -32,7 +32,7 @@ if os.environ.get('IS_OFFLINE'):
     dynamodb_client = boto3.client(
         'dynamodb', region_name='localhost', endpoint_url='http://localhost:8000'
     )
-    roofing_api_url = "http://localhost:2000"
+    # roofing_api_url = "http://localhost:2000"
 
 
 PPL_TABLE = os.environ['PPL_TABLE']
@@ -50,6 +50,7 @@ def create_roofer():
     get_roofer_by_email_url = f"{roofing_api_url}/roofer/email/{parse.quote(request.json['Email'])}"
     response = requests.request("GET", get_roofer_by_email_url)
 
+    print(response.text)
     roofer_record = json.loads(response.text)
     if roofer_record:
         return jsonify({'error': 'Roofer already exists', 'roofer_exists': True, 'roofer': roofer_record}), 400
