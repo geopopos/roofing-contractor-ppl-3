@@ -1,0 +1,36 @@
+name: Deploy master branch
+
+on:
+  push:
+    branches:
+      - main 
+
+jobs:
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
+        python-version: [3.8]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm ci
+    - name: Install serverless framework
+      run: npm install -g serverless
+    - name: Uses Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - run: pip install -r requirements.txt
+    - name: install sls plugins and deploy
+      run: python3 --version && sls plugin install -n serverless-python-requirements && sls plugin install -n serverless-wsgi && sls plugin install -n serverless-dynamodb-local && sls deploy --stage dev --verbose
+      env:
+        SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
+        # or if using AWS credentials directly
+        # AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        # AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
