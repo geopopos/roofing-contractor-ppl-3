@@ -51,10 +51,11 @@ def create_roofer():
     response = requests.request("GET", get_roofer_by_email_url)
 
     print(response.text)
+    
     roofer_record = json.loads(response.text)
     if roofer_record:
-        output_object = roofer_record.update()
-        return jsonify(output_object), 400
+        roofer_record.update({'roofer_exists': True})
+        return jsonify(roofer_record), 200
 
     dynamo_data['pk'] = {'S': pk}
     dynamo_data['sk'] = {'S': sk}
@@ -67,7 +68,14 @@ def create_roofer():
         name = f"{request.json['First Name']} {request.json['Last Name']}"
     email = request.json['Email']
 
-    output_object = roofer_record.update({'roofer_exists': False})
+    output_object = {
+        'pk': pk,
+        'sk': sk,
+        'name': name,
+        'email': email,
+        'roofer_exists': False,
+        'phone': request.json['Phone']
+    }
 
     return jsonify(output_object), 201
 
