@@ -73,6 +73,10 @@ functions:
     handler: wsgi_handler.handler
     events:
       - httpApi: 'POST /roofer/{proxy+}'
+  updateRoofer:
+    handler: wsgi_handler.handler
+    events:
+      - httpApi: 'PUT /roofer/{proxy+}'
   getLead:
     handler: wsgi_handler.handler
     events:
@@ -81,6 +85,10 @@ functions:
     handler: wsgi_handler.handler
     events:
       - httpApi: 'POST /lead/{proxy+}'
+  updateLead:
+    handler: wsgi_handler.handler
+    events:
+      - httpApi: 'PUT /lead/{proxy+}'
   createLeadPurchase:
     handler: wsgi_handler.handler
     events:

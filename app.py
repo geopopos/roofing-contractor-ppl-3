@@ -28,17 +28,19 @@ dynamodb_client = boto3.client('dynamodb')
 sqs_client = boto3.client('sqs')
 roofing_api_url = "https://e6b1hc9rfg.execute-api.us-east-1.amazonaws.com"
 
-if os.environ.get('IS_OFFLINE'):
+if os.environ.get('IS_OFFLINE') == 'True':
     dynamodb_client = boto3.client(
         'dynamodb', region_name='localhost', endpoint_url='http://localhost:8000'
     )
-    # roofing_api_url = "http://localhost:2000"
+    roofing_api_url = "http://localhost:2000"
 
 
 PPL_TABLE = os.environ['PPL_TABLE']
 
 @app.route('/roofer', methods=['POST'])
 def create_roofer():
+    print(os.environ)
+    # print(request.environ)
     pk = f"Roofer#{str(uuid.uuid4())}"
     sk = "ROOFER"
     dynamo_data = dynamo.to_item(request.json) 
@@ -100,7 +102,7 @@ def get_roofer(pk):
 
     item = response.get('Items', [])
     if not item:
-        return jsonify({'error': 'Could not find user with provided "pk"'})
+        return jsonify({'error': 'Could not find roofer with provided "pk"'})
     item = item[0]
 
     dict_data = dynamo.to_dict(item)
@@ -158,11 +160,7 @@ def update_roofer(pk):
 def create_lead():
     pk = f"Lead#{str(uuid.uuid4())}"
     sk = "LEAD"
-    data = request.json.get('data')
-    dynamo_data = dynamo.to_item(data) 
-
-    if not pk or not data or not sk:
-        return jsonify({'error': 'Please provide both "pk" and "data"'}), 400
+    dynamo_data = dynamo.to_item(request.json) 
 
     dynamo_data['pk'] = {'S': pk}
     dynamo_data['sk'] = {'S': sk}
@@ -170,7 +168,38 @@ def create_lead():
         TableName=PPL_TABLE, Item=dynamo_data
     )
 
-    return jsonify({'pk': pk, 'sk':sk, 'data': data})
+    return jsonify({'pk': pk, 'sk':sk, 'data': request.json})
+
+@app.route('/lead/<string:pk>', methods=['PUT'])
+def update_lead(pk):
+    update_data = request.json
+    sk = "LEAD"
+    update_expression = "SET "
+    expression_attribute_values = {}
+    for k, v in update_data.items():
+        update_expression += f"{k} = :{k},"
+        expression_attribute_values[f":{k}"] = {"S": v}
+    # remove last comma from update expression
+    update_expression = update_expression[:-1]
+    print(expression_attribute_values)
+    response = dynamodb_client.update_item(
+        TableName=PPL_TABLE,
+        Key={'pk': {'S': pk}, 'sk': {'S': sk}},
+        UpdateExpression=update_expression,
+        ExpressionAttributeValues=expression_attribute_values,
+        ReturnValues="UPDATED_NEW"
+    )
+    print("Query successful.")
+
+    attributes = response.get('Attributes')
+    if not attributes:
+        return jsonify({'error': 'Could not find lead with provided "pk"'}), 404
+
+    dict_data = dynamo.to_dict(attributes)
+
+    return jsonify(
+        dict_data
+    )
 
 @app.route('/lead/<string:pk>', methods=['GET'])
 def get_lead(pk):
