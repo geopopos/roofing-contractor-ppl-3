@@ -111,6 +111,33 @@ def get_roofer(pk):
         dict_data
     )
 
+@app.route('/roofer/', methods=['GET'])
+def get_all_roofers():
+    input = {
+        "TableName": PPL_TABLE,
+        "FilterExpression": "#766a0 = :766a0",
+        "ExpressionAttributeNames": {"#766a0":"sk"},
+        "ExpressionAttributeValues": {":766a0": {"S":"ROOFER"}}
+    }
+    try:
+        response = dynamodb_client.scan(**input)
+        print("Query successful.")
+        # Handle response
+    except ClientError as error:
+        handle_error(error)
+    except BaseException as error:
+        print("Unknown error while querying: " + error.response['Error']['Message'])
+
+    items = response.get('Items', [])
+    if not items:
+        return jsonify({'error': 'Could not find any roofers'})
+    dict_data = []
+    for item in items:
+        dict_data.append(dynamo.to_dict(item))
+
+    return jsonify(
+        dict_data
+    )
 
 @app.route('/roofer/<string:pk>', methods=['PUT'])
 def update_roofer(pk):
