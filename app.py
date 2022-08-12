@@ -277,13 +277,13 @@ def create_lead_purchase():
 
 @app.route('/roofer/lead/<string:pk>', methods=['GET'])
 def get__roofer_leads(pk):
-    pk = parse.quote(pk)
+    pk = parse.unquote(pk)
     
     input = {
-        "TableName": PPL_TABLE,
-        "KeyConditionExpression": "#69240 = :69240",
-        "ExpressionAttributeNames": {"#69240":"pk"},
-        "ExpressionAttributeValues": {":69240": {"S":pk}}
+        "TableName": "ppl-table-3-dev",
+        "KeyConditionExpression": "#bef90 = :bef90 And begins_with(#bef91, :bef91)",
+        "ExpressionAttributeNames": {"#bef90":"pk","#bef91":"sk"},
+        "ExpressionAttributeValues": {":bef90": {"S":pk},":bef91": {"S":"Lead#"}}
     }
     try:
         response = dynamodb_client.query(**input)
