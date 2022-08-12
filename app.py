@@ -277,6 +277,8 @@ def create_lead_purchase():
 
 @app.route('/roofer/lead/<string:pk>', methods=['GET'])
 def get__roofer_leads(pk):
+    pk = parse.quote(pk)
+    
     input = {
         "TableName": PPL_TABLE,
         "KeyConditionExpression": "#69240 = :69240",

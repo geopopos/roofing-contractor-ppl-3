@@ -3,3 +3,4 @@ package-lock.json
 package.json
 .serverless/
 .dynamodb/
+ppl-table-3-dev-2022-8-10.csv
